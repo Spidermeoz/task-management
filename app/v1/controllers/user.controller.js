@@ -146,12 +146,12 @@ module.exports.otpPassword = async (req, res) => {
 
   const token = user.token;
   res.cookie("token", token);
-  console.log(token)
+  console.log(token);
 
   res.json({
     code: 200,
     message: "Xác thực thành công",
-    token: token
+    token: token,
   });
 };
 
@@ -161,7 +161,7 @@ module.exports.resetPassword = async (req, res) => {
   const password = req.body.password;
 
   const user = await User.findOne({
-    token: token
+    token: token,
   });
 
   if (md5(password) == user.password) {
@@ -172,11 +172,14 @@ module.exports.resetPassword = async (req, res) => {
     return;
   }
 
-  await User.updateOne({
-    token: token
-  },{
-    password: md5(password)
-  })
+  await User.updateOne(
+    {
+      token: token,
+    },
+    {
+      password: md5(password),
+    }
+  );
 
   res.json({
     code: 200,
@@ -184,3 +187,18 @@ module.exports.resetPassword = async (req, res) => {
   });
 };
 
+// [GET] /api/v1/users/detail
+module.exports.detail = async (req, res) => {
+  const token = req.cookies.token;
+
+  const user = await User.findOne({
+    token: token,
+    deleted: false
+  }).select("-password -token")
+
+  res.json({
+    code: 200,
+    message: "Thành công!",
+    info: user
+  });
+};
