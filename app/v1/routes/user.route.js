@@ -7,4 +7,8 @@ router.post("/register", controller.register);
 
 router.post("/login", controller.login); // Thêm validate sau
 
+router.post("/password/forgot", controller.forgotPassword);
+
+router.post("/password/otp", controller.otpPassword);
+
 module.exports = router;
