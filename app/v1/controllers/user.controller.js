@@ -25,7 +25,7 @@ module.exports.register = async (req, res) => {
       fullName: req.body.fullName,
       email: req.body.email,
       password: req.body.password,
-      token: generateHelper.generateRandomNumber(30)
+      token: generateHelper.generateRandomNumber(30),
     });
 
     user.save();
@@ -37,7 +37,7 @@ module.exports.register = async (req, res) => {
     res.json({
       code: 200,
       message: "Tạo tài khoản thành công",
-      token: token
+      token: token,
     });
   }
 };
@@ -74,6 +74,7 @@ module.exports.login = async (req, res) => {
   res.json({
     code: 200,
     message: "Đăng nhập thành công!",
+    token: token
   });
 };
 
@@ -190,16 +191,9 @@ module.exports.resetPassword = async (req, res) => {
 
 // [GET] /api/v1/users/detail
 module.exports.detail = async (req, res) => {
-  const token = req.cookies.token;
-
-  const user = await User.findOne({
-    token: token,
-    deleted: false
-  }).select("-password -token")
-
   res.json({
     code: 200,
     message: "Thành công!",
-    info: user
+    info: req.user,
   });
 };
